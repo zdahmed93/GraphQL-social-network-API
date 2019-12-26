@@ -18,6 +18,28 @@ const users = [
         email: 'taylor@test.com'
     }
 ]
+
+const posts = [
+    {
+        id: 'a',
+        title: 'React',
+        body: 'React is a front end library',
+        published: false
+    },
+    {
+        id: 'b',
+        title: 'MongoDB',
+        body: 'MongoDB is a NoSQL Database',
+        published: false
+    },
+    {
+        id: 'c',
+        title: 'NodeJS',
+        body: 'NodeJS is a Javascript runtime environment',
+        published: false
+    } 
+
+]
 // Scalar types : String / Int / Float / Boolean / ID
 
 
@@ -27,6 +49,7 @@ const typeDefs = `
         me: User!
         post: Post!
         users(query: String): [User!]!
+        posts(query: String): [Post!]!
     }
 
     type User {
@@ -68,6 +91,14 @@ const resolvers = {
                 return users
             } else {
                 return users.filter(user => user.name.toLowerCase().includes(query.toLowerCase()))
+            }
+        },
+        posts(parent, args, context, info) {
+            const {query} = args
+            if (!query) {
+                return posts
+            } else {
+                return posts.filter(post => post.title.toLowerCase().includes(query.toLowerCase()) || post.body.toLowerCase().includes(query.toLowerCase()))
             }
         }
     }
