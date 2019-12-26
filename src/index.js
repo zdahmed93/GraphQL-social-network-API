@@ -8,6 +8,8 @@ const typeDefs = `
     type Query {
         me: User!
         post: Post!
+        greeting(name: String): String!
+        add(a: Float!, b: Float!): Float!
     }
 
     type User {
@@ -42,6 +44,17 @@ const resolvers = {
                 body: 'GrapgQL is awesome',
                 published: false
             }
+        },
+        greeting(parent, args, context, info) {
+            if (args.name) {
+                return `Hello, ${args.name} !`
+            } else {
+                return 'Hello !'
+            }
+        },
+        add(parent, args, context, info) {
+            const {a, b} = args
+            return a+b
         }
     }
 }
