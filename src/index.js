@@ -47,19 +47,24 @@ const posts = [
 const comments = [
     {
         id: 'c001',
-        text: 'the first comment'
+        text: 'the first comment',
+        authorId: '2'
     },
     {
         id: 'c002',
-        text: 'this second comment'
+        text: 'this second comment',
+        authorId: '3'
+
     },
     {
         id: 'c003',
-        text: 'this third comment'
+        text: 'this third comment',
+        authorId: '2'
     },
     {
         id: 'c004',
-        text: 'this fourth comment'
+        text: 'this fourth comment',
+        authorId: '3'
     }
 ]
 // Scalar types : String / Int / Float / Boolean / ID
@@ -81,6 +86,7 @@ const typeDefs = `
         email: String!
         age: Int
         posts: [Post!]!
+        comments: [Comment!]!
     }
 
     type Post {
@@ -94,10 +100,11 @@ const typeDefs = `
     type Comment {
         id: ID!
         text: String!
+        author: User!
     }
 `
 
-// Resolvers .   
+// Resolvers ..   
 const resolvers = {
     Query: {
         me() {
@@ -143,6 +150,14 @@ const resolvers = {
     User: {
         posts(parent, args, context, info) {
             return posts.filter((post) => post.authorId === parent.id)
+        },
+        comments(parent, args, ctx, info) {
+            return comments.filter(comment => comment.authorId === parent.id)
+        }
+    },
+    Comment: {
+        author(parent, args, ctx, info) {
+            return users.find(user => user.id === parent.authorId)
         }
     }
 }
