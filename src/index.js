@@ -9,7 +9,8 @@ const typeDefs = `
         me: User!
         post: Post!
         greeting(name: String): String!
-        add(a: Float!, b: Float!): Float!
+        add(numbers: [Float!]!): Float!
+        ages: [Int!]!
     }
 
     type User {
@@ -53,8 +54,16 @@ const resolvers = {
             }
         },
         add(parent, args, context, info) {
-            const {a, b} = args
-            return a+b
+            if (args.numbers.length === 0) {
+                return 0;
+            } else {
+                return args.numbers.reduce((accumulator, currentValue) => {
+                    return accumulator + currentValue
+                })
+            }
+        },
+        ages() {
+            return [20, 24, 19]
         }
     }
 }
