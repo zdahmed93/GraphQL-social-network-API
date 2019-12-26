@@ -60,6 +60,7 @@ const typeDefs = `
         name: String!
         email: String!
         age: Int
+        posts: [Post!]!
     }
 
     type Post {
@@ -71,7 +72,7 @@ const typeDefs = `
     }
 `
 
-// Resolvers
+// Resolvers  
 const resolvers = {
     Query: {
         me() {
@@ -110,6 +111,11 @@ const resolvers = {
         author(parent, args, context, info) {
             return users.find((user) => user.id === parent.authorId)
         }
+    },
+    User: {
+        posts(parent, args, context, info) {
+            return posts.filter((post) => post.authorId === parent.id)
+        }
     }
 }
 
@@ -118,6 +124,6 @@ const server = new GraphQLServer({
     resolvers
 })
 
-const port = 7500;
+const port = 7000;
 
 server.start({port}, () => console.log(`Server is running on port ${port}`));
