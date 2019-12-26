@@ -43,6 +43,25 @@ const posts = [
     } 
 
 ]
+
+const comments = [
+    {
+        id: 'c001',
+        text: 'the first comment'
+    },
+    {
+        id: 'c002',
+        text: 'this second comment'
+    },
+    {
+        id: 'c003',
+        text: 'this third comment'
+    },
+    {
+        id: 'c004',
+        text: 'this fourth comment'
+    }
+]
 // Scalar types : String / Int / Float / Boolean / ID
 
 
@@ -53,6 +72,7 @@ const typeDefs = `
         post: Post!
         users(query: String): [User!]!
         posts(query: String): [Post!]!
+        comments: [Comment!]!
     }
 
     type User {
@@ -70,9 +90,14 @@ const typeDefs = `
         published: Boolean!
         author: User!
     }
+
+    type Comment {
+        id: ID!
+        text: String!
+    }
 `
 
-// Resolvers  
+// Resolvers .   
 const resolvers = {
     Query: {
         me() {
@@ -105,6 +130,9 @@ const resolvers = {
             } else {
                 return posts.filter(post => post.title.toLowerCase().includes(query.toLowerCase()) || post.body.toLowerCase().includes(query.toLowerCase()))
             }
+        },
+        comments() {
+            return comments
         }
     },
     Post: {
