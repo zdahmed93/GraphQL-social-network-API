@@ -24,19 +24,22 @@ const posts = [
         id: 'a',
         title: 'React',
         body: 'React is a front end library',
-        published: false
+        published: false,
+        authorId: '3'
     },
     {
         id: 'b',
         title: 'MongoDB',
         body: 'MongoDB is a NoSQL Database',
-        published: false
+        published: false,
+        authorId: '1'
     },
     {
         id: 'c',
         title: 'NodeJS',
         body: 'NodeJS is a Javascript runtime environment',
-        published: false
+        published: false,
+        authorId: '3'
     } 
 
 ]
@@ -64,6 +67,7 @@ const typeDefs = `
         title: String!
         body: String!
         published: Boolean!
+        author: User!
     }
 `
 
@@ -101,6 +105,11 @@ const resolvers = {
                 return posts.filter(post => post.title.toLowerCase().includes(query.toLowerCase()) || post.body.toLowerCase().includes(query.toLowerCase()))
             }
         }
+    },
+    Post: {
+        author(parent, args, context, info) {
+            return users.find((user) => user.id === parent.authorId)
+        }
     }
 }
 
@@ -109,6 +118,6 @@ const server = new GraphQLServer({
     resolvers
 })
 
-const port = 9000;
+const port = 7500;
 
 server.start({port}, () => console.log(`Server is running on port ${port}`));
