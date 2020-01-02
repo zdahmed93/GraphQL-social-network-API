@@ -25,7 +25,7 @@ const posts = [
         title: 'React',
         body: 'React is a front end library',
         published: false,
-        authorId: '3'
+        authorId: '2'
     },
     {
         id: 'b',
@@ -39,7 +39,7 @@ const posts = [
         title: 'NodeJS',
         body: 'NodeJS is a Javascript runtime environment',
         published: false,
-        authorId: '3'
+        authorId: '2'
     } 
 
 ]
@@ -48,23 +48,27 @@ const comments = [
     {
         id: 'c001',
         text: 'the first comment',
-        authorId: '2'
+        authorId: '2',
+        postId: 'c'
     },
     {
         id: 'c002',
         text: 'this second comment',
-        authorId: '3'
+        authorId: '3',
+        postId: 'c'
 
     },
     {
         id: 'c003',
         text: 'this third comment',
-        authorId: '2'
+        authorId: '2',
+        postId: 'b'
     },
     {
         id: 'c004',
         text: 'this fourth comment',
-        authorId: '3'
+        authorId: '3',
+        postId: 'b'
     }
 ]
 // Scalar types : String / Int / Float / Boolean / ID
@@ -95,12 +99,14 @@ const typeDefs = `
         body: String!
         published: Boolean!
         author: User!
+        comments: [Comment!]!
     }
 
     type Comment {
         id: ID!
         text: String!
         author: User!
+        post: Post!
     }
 `
 
@@ -145,6 +151,9 @@ const resolvers = {
     Post: {
         author(parent, args, context, info) {
             return users.find((user) => user.id === parent.authorId)
+        },
+        comments(parent, args, ctx, info) {
+            return comments.filter(comment => comment.postId === parent.id)
         }
     },
     User: {
@@ -158,6 +167,9 @@ const resolvers = {
     Comment: {
         author(parent, args, ctx, info) {
             return users.find(user => user.id === parent.authorId)
+        },
+        post(parent, args, ctx, info) {
+            return posts.find(post => post.id === parent.postId)
         }
     }
 }
