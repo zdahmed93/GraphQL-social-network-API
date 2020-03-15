@@ -1,7 +1,7 @@
 import {GraphQLServer} from 'graphql-yoga';
 import uuidv4 from 'uuid/v4';
 
-const users = [
+let users = [
     {
         id: '1',
         name: 'Ahmed',
@@ -20,7 +20,7 @@ const users = [
     }
 ]
 
-const posts = [
+let posts = [
     {
         id: 'a',
         title: 'React',
@@ -45,7 +45,7 @@ const posts = [
 
 ]
 
-const comments = [
+let comments = [
     {
         id: 'c001',
         text: 'the first comment',
@@ -87,8 +87,11 @@ const typeDefs = `
 
     type Mutation {
         createUser(data: CreateUserInput!): User!
+        deleteUser(id: ID!): User!
         createPost(data: CreatePostInput!): Post!
+        deletePost(id: ID!):Post!
         createComment(data: CreateCommentInput!): Comment!
+        deleteComment(id: ID!):Comment!
     }
 
     input CreateUserInput {
@@ -213,6 +216,41 @@ const resolvers = {
                 ...args.data
             }
             comments.push(comment);
+            return comment;
+        },
+        deleteUser(parent, args, context, info) {
+            const userIndex = users.findIndex(user => user.id === args.id);
+            if (userIndex === -1) {
+                throw new Error('User not found')
+            }
+            const deletedUsers = users.splice(userIndex, 1);
+
+            posts = posts.filter(post => {
+                const match = post.authorId === args.id;
+
+                if (match) {
+                    comments = comments.filter(comment => comment.postId !== post.id)
+                }
+                return !match;
+            })
+            comments = comments.filter(comment => comment.authorId !== args.id);
+            return deletedUsers[0]
+        },
+        deletePost(parent, args, ctx, info) {
+            const post = posts.find(post => post.id === args.id);
+            if (!post) {
+                throw new Error('Post not found')
+            }
+            posts = posts.filter(post => post.id !== args.id);
+            comments = comments.filter(comment => comment.postId !== args.id);
+            return post;
+        },
+        deleteComment(parent, args, ctx, info) {
+            const comment = comments.find(comment => comment.id === args.id);
+            if (!comment) {
+                throw new Error('Comment not found')
+            }
+            comments = comments.filter(comment => comment.id !== args.id);
             return comment;
         }
     },
