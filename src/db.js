@@ -22,7 +22,7 @@ const posts = [
         id: 'a',
         title: 'React',
         body: 'React is a front end library',
-        published: false,
+        published: true,
         authorId: '2'
     },
     {
